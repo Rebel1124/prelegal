@@ -48,7 +48,7 @@ export function DocumentSuggestBox() {
         <button
           type="submit"
           disabled={isSending || !description.trim()}
-          className="rounded-md bg-[#753991] px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-md bg-brand-purple px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSending ? "Thinking…" : "Ask"}
         </button>
@@ -64,7 +64,7 @@ export function DocumentSuggestBox() {
           {result.matchedSlug && (
             <>
               {" "}
-              <Link href={`/documents/${result.matchedSlug}`} className="font-medium text-[#209dd7] underline">
+              <Link href={`/documents/${result.matchedSlug}`} className="font-medium text-brand-blue underline">
                 Start drafting it →
               </Link>
             </>

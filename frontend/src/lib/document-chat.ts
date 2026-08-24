@@ -1,3 +1,4 @@
+import { authFetch } from "./auth";
 import type { DocumentFormData } from "./document-types";
 
 export interface ChatMessage {
@@ -5,15 +6,22 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface DocumentChatResult {
+  reply: string;
+  fields: DocumentFormData;
+  documentId: number;
+}
+
 export async function sendDocumentChatMessage(
   slug: string,
   messages: ChatMessage[],
   fields: DocumentFormData,
-): Promise<{ reply: string; fields: DocumentFormData }> {
-  const response = await fetch(`/api/documents/${slug}/chat`, {
+  documentId: number | null,
+): Promise<DocumentChatResult> {
+  const response = await authFetch(`/api/documents/${slug}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages, fields }),
+    body: JSON.stringify({ messages, fields, documentId }),
   });
 
   if (!response.ok) {
