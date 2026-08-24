@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import { CoverPageView } from "@/components/cover-page-view";
 import { TextAreaField, TextField } from "@/components/form-fields";
 import { StandardTermsView } from "@/components/standard-terms-view";
@@ -76,9 +76,14 @@ export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
     }
   }
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await handleDownload();
+  }
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <form className="space-y-6" onSubmit={(event) => event.preventDefault()}>
+      <form id="nda-form" className="space-y-6" onSubmit={handleSubmit}>
         <PartyFieldset
           title="Party A"
           party={formData.partyA}
@@ -136,8 +141,8 @@ export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-medium text-gray-700">Live preview</h2>
           <button
-            type="button"
-            onClick={handleDownload}
+            type="submit"
+            form="nda-form"
             disabled={isGeneratingPdf}
             className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
