@@ -1,0 +1,17 @@
+[project]
+name = "prelegal-backend"
+version = "0.1.0"
+description = "Prelegal backend API and static frontend host"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.119.0",
+    "uvicorn[standard]>=0.38.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "app"
+module-root = ""
