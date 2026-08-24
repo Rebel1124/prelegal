@@ -1,0 +1,26 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "subscriptionPeriod", "label": "Subscription Period", "aliases": ["Subscription Periods"] },
+    { "key": "permittedUses", "label": "Permitted Uses", "textarea": true },
+    { "key": "licenseLimits", "label": "License Limits", "textarea": true },
+    { "key": "paymentProcess", "label": "Payment Process", "textarea": true },
+    { "key": "orderDate", "label": "Order Date" },
+    { "key": "nonRenewalNoticeDate", "label": "Non-Renewal Notice Date" },
+    { "key": "warrantyPeriod", "label": "Warranty Period" },
+    { "key": "deletionProcedure", "label": "Deletion Procedure", "textarea": true },
+    { "key": "additionalWarranties", "label": "Additional Warranties", "textarea": true },
+    { "key": "generalCapAmount", "label": "General Cap Amount" },
+    { "key": "increasedClaims", "label": "Increased Claims", "textarea": true },
+    { "key": "increasedCapAmount", "label": "Increased Cap Amount" },
+    { "key": "unlimitedClaims", "label": "Unlimited Claims", "textarea": true },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "chosenCourts", "label": "Chosen Courts" },
+    { "key": "providerCoveredClaims", "label": "Provider Covered Claims", "aliases": ["Provider Covered Claim"], "textarea": true },
+    { "key": "customerCoveredClaims", "label": "Customer Covered Claims", "aliases": ["Customer Covered Claim"], "textarea": true }
+  ]
+}

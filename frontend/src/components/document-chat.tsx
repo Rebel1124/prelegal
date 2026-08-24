@@ -1,24 +1,27 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import { type ChatMessage, sendNdaChatMessage } from "@/lib/nda-chat";
-import type { NdaFormData } from "@/lib/nda-form";
+import { type ChatMessage, sendDocumentChatMessage } from "@/lib/document-chat";
+import type { DocumentFormData, DocumentTypeConfig } from "@/lib/document-types";
 
-const GREETING =
-  "Hi! I'll help you draft a Mutual NDA. Who are the two parties involved, and when should the agreement take effect?";
-
-export function NdaChat({
-  formData,
-  onFormDataChange,
+export function DocumentChat({
+  config,
+  data,
+  onDataChange,
   isSending,
   onSendingChange,
 }: {
-  formData: NdaFormData;
-  onFormDataChange: (data: NdaFormData) => void;
+  config: DocumentTypeConfig;
+  data: DocumentFormData;
+  onDataChange: (data: DocumentFormData) => void;
   isSending: boolean;
   onSendingChange: (isSending: boolean) => void;
 }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([{ role: "assistant", content: GREETING }]);
+  const [greeting] = useState(
+    () =>
+      `Hi! I'll help you draft a ${config.name}. Who are the parties involved, and when should it take effect?`,
+  );
+  const [messages, setMessages] = useState<ChatMessage[]>([{ role: "assistant", content: greeting }]);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -34,11 +37,11 @@ export function NdaChat({
     setError(null);
 
     try {
-      const result = await sendNdaChatMessage(nextMessages, formData);
+      const result = await sendDocumentChatMessage(config.slug, nextMessages, data);
       setMessages((prev) => [...prev, { role: "assistant", content: result.reply }]);
-      onFormDataChange(result.fields);
+      onDataChange(result.fields);
     } catch (err) {
-      console.error("NDA chat request failed", err);
+      console.error("Document chat request failed", err);
       setError("Something went wrong sending that message. Please try again.");
       setMessages((prev) => prev.slice(0, -1));
       setDraft(content);

@@ -2,33 +2,44 @@
 
 import { useMemo, useState } from "react";
 import { CoverPageView } from "@/components/cover-page-view";
-import { NdaChat } from "@/components/nda-chat";
-import { NdaFieldsPanel } from "@/components/nda-fields-panel";
+import { DocumentChat } from "@/components/document-chat";
+import { DocumentFieldsPanel } from "@/components/document-fields-panel";
 import { StandardTermsView } from "@/components/standard-terms-view";
-import { createDefaultNdaFormData, missingRequiredFields, type NdaFormData } from "@/lib/nda-form";
-import { downloadNdaPdf } from "@/lib/pdf/download";
+import {
+  type DocumentFormData,
+  type DocumentTypeConfig,
+  createDefaultFormData,
+  missingRequiredFields,
+} from "@/lib/document-types";
+import { downloadDocumentPdf } from "@/lib/pdf/download";
 import { type DocParagraph, fillFieldRuns } from "@/lib/standard-terms";
 
-export function NdaWorkspace({ standardTerms }: { standardTerms: DocParagraph[] }) {
-  const [formData, setFormData] = useState<NdaFormData>(createDefaultNdaFormData);
+export function DocumentWorkspace({
+  config,
+  standardTerms,
+}: {
+  config: DocumentTypeConfig;
+  standardTerms: DocParagraph[];
+}) {
+  const [data, setData] = useState<DocumentFormData>(() => createDefaultFormData(config));
   const [isSending, setIsSending] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const filledStandardTerms = useMemo(
-    () => fillFieldRuns(standardTerms, formData),
-    [standardTerms, formData],
+    () => fillFieldRuns(standardTerms, data),
+    [standardTerms, data],
   );
 
-  const missingFields = missingRequiredFields(formData);
+  const missingFields = missingRequiredFields(config, data);
 
   async function handleDownload() {
     setIsGeneratingPdf(true);
     setDownloadError(null);
     try {
-      await downloadNdaPdf(formData, filledStandardTerms);
+      await downloadDocumentPdf(config, data, filledStandardTerms);
     } catch (error) {
-      console.error("Failed to generate NDA PDF", error);
+      console.error("Failed to generate document PDF", error);
       setDownloadError("Something went wrong generating the PDF. Please try again.");
     } finally {
       setIsGeneratingPdf(false);
@@ -38,13 +49,14 @@ export function NdaWorkspace({ standardTerms }: { standardTerms: DocParagraph[] 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <div className="space-y-6">
-        <NdaChat
-          formData={formData}
-          onFormDataChange={setFormData}
+        <DocumentChat
+          config={config}
+          data={data}
+          onDataChange={setData}
           isSending={isSending}
           onSendingChange={setIsSending}
         />
-        <NdaFieldsPanel formData={formData} onFormDataChange={setFormData} disabled={isSending} />
+        <DocumentFieldsPanel config={config} data={data} onDataChange={setData} disabled={isSending} />
       </div>
 
       <div className="lg:sticky lg:top-8 lg:self-start">
@@ -68,7 +80,7 @@ export function NdaWorkspace({ standardTerms }: { standardTerms: DocParagraph[] 
           </p>
         )}
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-          <CoverPageView formData={formData} />
+          <CoverPageView config={config} data={data} />
           <hr className="my-8 border-gray-200" />
           <StandardTermsView paragraphs={filledStandardTerms} />
         </div>

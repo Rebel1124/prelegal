@@ -1,0 +1,15 @@
+{
+  "parties": [
+    { "key": "provider", "roleLabel": "Provider" },
+    { "key": "partner", "roleLabel": "Partner" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "term", "label": "Term" },
+    { "key": "program", "label": "Program", "textarea": true },
+    { "key": "fees", "label": "Fees" },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "chosenCourts", "label": "Chosen Courts" },
+    { "key": "noticeAddress", "label": "Notice Address", "textarea": true }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "parties": [
+    { "key": "provider", "roleLabel": "Provider" },
+    { "key": "company", "roleLabel": "Company" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "BAA Effective Date" },
+    { "key": "limitations", "label": "Limitations", "textarea": true },
+    { "key": "breachNotificationPeriod", "label": "Breach Notification Period" },
+    { "key": "agreement", "label": "Agreement", "textarea": true }
+  ]
+}

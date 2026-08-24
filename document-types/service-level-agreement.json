@@ -1,0 +1,16 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "subscriptionPeriod", "label": "Subscription Period" },
+    { "key": "targetUptime", "label": "Target Uptime" },
+    { "key": "targetResponseTime", "label": "Target Response Time" },
+    { "key": "supportChannel", "label": "Support Channel" },
+    { "key": "uptimeCredit", "label": "Uptime Credit", "textarea": true },
+    { "key": "responseTimeCredit", "label": "Response Time Credit", "textarea": true },
+    { "key": "scheduledDowntime", "label": "Scheduled Downtime", "textarea": true }
+  ]
+}

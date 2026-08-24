@@ -1,0 +1,25 @@
+{
+  "parties": [
+    { "key": "company", "roleLabel": "Company" },
+    { "key": "partner", "roleLabel": "Partner" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "obligations", "label": "Obligations", "textarea": true },
+    { "key": "paymentProcess", "label": "Payment Process", "textarea": true },
+    { "key": "paymentSchedule", "label": "Payment Schedule" },
+    { "key": "territory", "label": "Territory" },
+    { "key": "endDate", "label": "End Date" },
+    { "key": "dpa", "label": "DPA" },
+    { "key": "brandGuidelines", "label": "Brand Guidelines", "textarea": true },
+    { "key": "additionalWarranties", "label": "Additional Warranties", "textarea": true },
+    { "key": "generalCapAmount", "label": "General Cap Amount" },
+    { "key": "increasedClaims", "label": "Increased Claims", "textarea": true },
+    { "key": "increasedCapAmount", "label": "Increased Cap Amount" },
+    { "key": "unlimitedClaims", "label": "Unlimited Claims", "textarea": true },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "chosenCourts", "label": "Chosen Courts" },
+    { "key": "companyCoveredClaim", "label": "Company Covered Claim", "textarea": true },
+    { "key": "partnerCoveredClaims", "label": "Partner Covered Claims", "aliases": ["Partner Covered Claim"], "textarea": true }
+  ]
+}

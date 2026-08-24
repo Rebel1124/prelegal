@@ -1,11 +1,12 @@
 import {
-  DETAIL_FIELD_LABELS,
-  type NdaFormData,
+  type DocumentFormData,
+  type DocumentTypeConfig,
   type PartyInfo,
   displayValue,
-  formatEffectiveDate,
-  resolveFieldValue,
-} from "@/lib/nda-form";
+  getCoverPageFields,
+  getFieldValue,
+  getPartyValue,
+} from "@/lib/document-types";
 
 function Filled({ children }: { children: string }) {
   return <span className="underline decoration-dotted underline-offset-2">{children}</span>;
@@ -28,39 +29,51 @@ function PartyBlock({ title, party }: { title: string; party: PartyInfo }) {
   );
 }
 
-export function CoverPageView({ formData }: { formData: NdaFormData }) {
-  const effectiveDate = formatEffectiveDate(formData.effectiveDate);
+export function CoverPageView({
+  config,
+  data,
+}: {
+  config: DocumentTypeConfig;
+  data: DocumentFormData;
+}) {
+  const { effectiveDate, partyA, partyB, detailFields } = getCoverPageFields(config, data);
 
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Mutual Non-Disclosure Agreement</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{config.name}</h1>
         <p className="text-sm text-gray-500">Cover Page</p>
       </div>
 
       <p className="text-sm leading-relaxed text-gray-800">
         This Cover Page is entered into as of{" "}
         <Filled>{displayValue(effectiveDate, "[Effective Date]")}</Filled> (the &ldquo;Effective
-        Date&rdquo;) between <Filled>{displayValue(formData.partyA.legalName, "[Party A Legal Name]")}</Filled>{" "}
-        (&ldquo;Party A&rdquo;) and{" "}
-        <Filled>{displayValue(formData.partyB.legalName, "[Party B Legal Name]")}</Filled> (&ldquo;Party
-        B&rdquo;), and incorporates the Standard Terms below to form the MNDA.
+        Date&rdquo;) between{" "}
+        <Filled>
+          {displayValue(getPartyValue(data, partyA.key).legalName, `[${partyA.roleLabel} Legal Name]`)}
+        </Filled>{" "}
+        (&ldquo;{partyA.roleLabel}&rdquo;) and{" "}
+        <Filled>
+          {displayValue(getPartyValue(data, partyB.key).legalName, `[${partyB.roleLabel} Legal Name]`)}
+        </Filled>{" "}
+        (&ldquo;{partyB.roleLabel}&rdquo;), and incorporates the Standard Terms below to form the
+        Agreement.
       </p>
 
       <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-        {DETAIL_FIELD_LABELS.map((label) => (
-          <div key={label}>
-            <dt className="font-medium text-gray-500">{label}</dt>
+        {detailFields.map((field) => (
+          <div key={field.key}>
+            <dt className="font-medium text-gray-500">{field.label}</dt>
             <dd className="text-gray-900">
-              <Filled>{displayValue(resolveFieldValue(label, formData), `[${label}]`)}</Filled>
+              <Filled>{displayValue(getFieldValue(data, field.key), `[${field.label}]`)}</Filled>
             </dd>
           </div>
         ))}
       </dl>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <PartyBlock title="Party A" party={formData.partyA} />
-        <PartyBlock title="Party B" party={formData.partyB} />
+        <PartyBlock title={partyA.roleLabel} party={getPartyValue(data, partyA.key)} />
+        <PartyBlock title={partyB.roleLabel} party={getPartyValue(data, partyB.key)} />
       </div>
     </section>
   );
