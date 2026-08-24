@@ -1,24 +1,21 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
-import { CoverPageView } from "@/components/cover-page-view";
 import { TextAreaField, TextField } from "@/components/form-fields";
-import { StandardTermsView } from "@/components/standard-terms-view";
-import { createDefaultNdaFormData, type NdaFormData, type PartyInfo, type PartyKey } from "@/lib/nda-form";
-import { downloadNdaPdf } from "@/lib/pdf/download";
-import { type DocParagraph, fillFieldRuns } from "@/lib/standard-terms";
+import type { NdaFormData, PartyInfo, PartyKey } from "@/lib/nda-form";
 
 function PartyFieldset({
   title,
   party,
   onChange,
+  disabled,
 }: {
   title: string;
   party: PartyInfo;
   onChange: (key: keyof PartyInfo, value: string) => void;
+  disabled?: boolean;
 }) {
   return (
-    <fieldset className="space-y-4 rounded-lg border border-gray-200 p-4">
+    <fieldset disabled={disabled} className="space-y-4 rounded-lg border border-gray-200 p-4">
       <legend className="px-1 text-sm font-semibold text-gray-900">{title}</legend>
       <TextField
         label="Legal name"
@@ -50,57 +47,43 @@ function PartyFieldset({
   );
 }
 
-export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
-  const [formData, setFormData] = useState<NdaFormData>(createDefaultNdaFormData);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
-
-  const filledStandardTerms = useMemo(
-    () => fillFieldRuns(standardTerms, formData),
-    [standardTerms, formData],
-  );
-
+export function NdaFieldsPanel({
+  formData,
+  onFormDataChange,
+  disabled,
+}: {
+  formData: NdaFormData;
+  onFormDataChange: (data: NdaFormData) => void;
+  disabled?: boolean;
+}) {
   function updateField<K extends keyof NdaFormData>(key: K, value: NdaFormData[K]) {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+    onFormDataChange({ ...formData, [key]: value });
   }
 
   function updateParty(party: PartyKey, key: keyof PartyInfo, value: string) {
-    setFormData((prev) => ({ ...prev, [party]: { ...prev[party], [key]: value } }));
-  }
-
-  async function handleDownload() {
-    setIsGeneratingPdf(true);
-    setDownloadError(null);
-    try {
-      await downloadNdaPdf(formData, filledStandardTerms);
-    } catch (error) {
-      console.error("Failed to generate NDA PDF", error);
-      setDownloadError("Something went wrong generating the PDF. Please try again.");
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await handleDownload();
+    onFormDataChange({ ...formData, [party]: { ...formData[party], [key]: value } });
   }
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <form id="nda-form" className="space-y-6" onSubmit={handleSubmit}>
+    <details className="rounded-lg border border-gray-200">
+      <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-gray-700">
+        Edit details manually
+      </summary>
+      <div className="space-y-6 border-t border-gray-200 p-4">
         <PartyFieldset
           title="Party A"
           party={formData.partyA}
           onChange={(key, value) => updateParty("partyA", key, value)}
+          disabled={disabled}
         />
         <PartyFieldset
           title="Party B"
           party={formData.partyB}
           onChange={(key, value) => updateParty("partyB", key, value)}
+          disabled={disabled}
         />
 
-        <fieldset className="space-y-4 rounded-lg border border-gray-200 p-4">
+        <fieldset disabled={disabled} className="space-y-4 rounded-lg border border-gray-200 p-4">
           <legend className="px-1 text-sm font-semibold text-gray-900">Deal terms</legend>
           <TextField
             label="Effective date"
@@ -140,31 +123,7 @@ export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
             placeholder="Wilmington, Delaware"
           />
         </fieldset>
-      </form>
-
-      <div className="lg:sticky lg:top-8 lg:self-start">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-gray-700">Live preview</h2>
-          <button
-            type="submit"
-            form="nda-form"
-            disabled={isGeneratingPdf}
-            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isGeneratingPdf ? "Generating…" : "Download PDF"}
-          </button>
-        </div>
-        {downloadError && (
-          <p className="mb-4 text-sm text-red-600" role="alert">
-            {downloadError}
-          </p>
-        )}
-        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-          <CoverPageView formData={formData} />
-          <hr className="my-8 border-gray-200" />
-          <StandardTermsView paragraphs={filledStandardTerms} />
-        </div>
       </div>
-    </div>
+    </details>
   );
 }

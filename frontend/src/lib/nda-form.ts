@@ -85,6 +85,15 @@ export function formatEffectiveDate(value: string): string {
   return new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "UTC" }).format(date);
 }
 
+/** The fields required before the NDA can be downloaded, matching the labels shown to the user. */
+export function missingRequiredFields(data: NdaFormData): string[] {
+  const missing: string[] = [];
+  if (!data.effectiveDate.trim()) missing.push("Effective date");
+  if (!data.partyA.legalName.trim()) missing.push("Party A legal name");
+  if (!data.partyB.legalName.trim()) missing.push("Party B legal name");
+  return missing;
+}
+
 export function resolveFieldValue(label: CoverPageFieldLabel, data: NdaFormData): string {
   switch (label) {
     case "Purpose":
