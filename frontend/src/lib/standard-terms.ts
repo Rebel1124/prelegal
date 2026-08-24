@@ -1,4 +1,9 @@
-import { type CoverPageFieldLabel, type NdaFormData, resolveFieldValue } from "./nda-form";
+import {
+  type CoverPageFieldLabel,
+  type NdaFormData,
+  isCoverPageFieldLabel,
+  resolveFieldValue,
+} from "./nda-form";
 
 export type DocRun =
   | { type: "text"; text: string }
@@ -28,7 +33,12 @@ function parseInline(text: string): DocRun[] {
     if (boldText !== undefined) {
       runs.push({ type: "bold", text: boldText });
     } else if (fieldLabel !== undefined) {
-      runs.push({ type: "field", label: fieldLabel as CoverPageFieldLabel, text: fieldLabel });
+      if (!isCoverPageFieldLabel(fieldLabel)) {
+        throw new Error(
+          `Unrecognized coverpage_link label "${fieldLabel}" in Standard Terms content`,
+        );
+      }
+      runs.push({ type: "field", label: fieldLabel, text: fieldLabel });
     } else if (linkText !== undefined && linkHref !== undefined) {
       runs.push({ type: "link", text: linkText, href: linkHref });
     }

@@ -1,19 +1,12 @@
 import { Document, Link, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import {
-  type CoverPageFieldLabel,
+  DETAIL_FIELD_LABELS,
   type NdaFormData,
+  displayValue,
   formatEffectiveDate,
   resolveFieldValue,
 } from "../nda-form";
 import type { DocParagraph, DocRun } from "../standard-terms";
-
-const DETAIL_LABELS: CoverPageFieldLabel[] = [
-  "Purpose",
-  "MNDA Term",
-  "Term of Confidentiality",
-  "Governing Law",
-  "Jurisdiction",
-];
 
 const styles = StyleSheet.create({
   page: { paddingVertical: 48, paddingHorizontal: 56, fontSize: 10, lineHeight: 1.5, color: "#111827" },
@@ -31,10 +24,6 @@ const styles = StyleSheet.create({
   sigBlock: { marginTop: 20, borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 6 },
   divider: { borderBottomWidth: 1, borderBottomColor: "#d1d5db", marginVertical: 20 },
 });
-
-function display(value: string, placeholder: string) {
-  return value.trim().length > 0 ? value : placeholder;
-}
 
 function RunsInline({ runs }: { runs: DocRun[] }) {
   return (
@@ -83,23 +72,23 @@ export function NdaPdfDocument({ formData, standardTerms }: NdaPdfDocumentProps)
 
         <Text style={styles.paragraph}>
           This Cover Page is entered into as of{" "}
-          <Text style={styles.underline}>{display(effectiveDate, "[Effective Date]")}</Text> (the
+          <Text style={styles.underline}>{displayValue(effectiveDate, "[Effective Date]")}</Text> (the
           &ldquo;Effective Date&rdquo;) between{" "}
           <Text style={styles.underline}>
-            {display(formData.partyA.legalName, "[Party A Legal Name]")}
+            {displayValue(formData.partyA.legalName, "[Party A Legal Name]")}
           </Text>{" "}
           (&ldquo;Party A&rdquo;) and{" "}
           <Text style={styles.underline}>
-            {display(formData.partyB.legalName, "[Party B Legal Name]")}
+            {displayValue(formData.partyB.legalName, "[Party B Legal Name]")}
           </Text>{" "}
           (&ldquo;Party B&rdquo;), and incorporates the Standard Terms below to form the MNDA.
         </Text>
 
-        {DETAIL_LABELS.map((label) => (
+        {DETAIL_FIELD_LABELS.map((label) => (
           <View key={label} style={styles.detailRow}>
             <Text style={styles.detailLabel}>{label}</Text>
             <Text style={styles.detailValue}>
-              {display(resolveFieldValue(label, formData), `[${label}]`)}
+              {displayValue(resolveFieldValue(label, formData), `[${label}]`)}
             </Text>
           </View>
         ))}
@@ -110,12 +99,12 @@ export function NdaPdfDocument({ formData, standardTerms }: NdaPdfDocumentProps)
             return (
               <View key={key} style={styles.partyBlock}>
                 <Text style={styles.bold}>{index === 0 ? "Party A" : "Party B"}</Text>
-                <Text>{display(party.legalName, "[Legal Name]")}</Text>
-                <Text>{display(party.noticeAddress, "[Notice Address]")}</Text>
+                <Text>{displayValue(party.legalName, "[Legal Name]")}</Text>
+                <Text>{displayValue(party.noticeAddress, "[Notice Address]")}</Text>
                 <View style={styles.sigBlock}>
                   <Text>Signature: ____________________</Text>
-                  <Text>Name: {display(party.signatoryName, "[Signatory Name]")}</Text>
-                  <Text>Title: {display(party.signatoryTitle, "[Signatory Title]")}</Text>
+                  <Text>Name: {displayValue(party.signatoryName, "[Signatory Name]")}</Text>
+                  <Text>Title: {displayValue(party.signatoryTitle, "[Signatory Title]")}</Text>
                 </View>
               </View>
             );

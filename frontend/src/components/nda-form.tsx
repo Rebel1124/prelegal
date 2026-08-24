@@ -53,6 +53,7 @@ function PartyFieldset({
 export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
   const [formData, setFormData] = useState<NdaFormData>(createDefaultNdaFormData);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const filledStandardTerms = useMemo(
     () => fillFieldRuns(standardTerms, formData),
@@ -69,8 +70,12 @@ export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
 
   async function handleDownload() {
     setIsGeneratingPdf(true);
+    setDownloadError(null);
     try {
       await downloadNdaPdf(formData, filledStandardTerms);
+    } catch (error) {
+      console.error("Failed to generate NDA PDF", error);
+      setDownloadError("Something went wrong generating the PDF. Please try again.");
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -149,6 +154,11 @@ export function NdaForm({ standardTerms }: { standardTerms: DocParagraph[] }) {
             {isGeneratingPdf ? "Generating…" : "Download PDF"}
           </button>
         </div>
+        {downloadError && (
+          <p className="mb-4 text-sm text-red-600" role="alert">
+            {downloadError}
+          </p>
+        )}
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
           <CoverPageView formData={formData} />
           <hr className="my-8 border-gray-200" />
