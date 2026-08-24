@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
 from app.db import init_db
+from app.nda_chat import NdaChatRequest, NdaChatResponse, run_chat_turn
 
 STATIC_DIR = Path(os.environ.get("STATIC_DIR", "static"))
 
@@ -22,6 +23,11 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.post("/api/nda/chat")
+def nda_chat(request: NdaChatRequest) -> NdaChatResponse:
+    return run_chat_turn(request)
 
 
 if STATIC_DIR.is_dir():

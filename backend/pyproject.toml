@@ -5,6 +5,8 @@ description = "Prelegal backend API and static frontend host"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.119.0",
+    "litellm>=1.98.0",
+    "pydantic>=2.13.4",
     "uvicorn[standard]>=0.38.0",
 ]
 
@@ -15,3 +17,9 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "app"
 module-root = ""
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+]
