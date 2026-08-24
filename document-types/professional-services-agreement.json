@@ -1,0 +1,30 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "deliverables", "label": "Deliverables", "aliases": ["Deliverable"], "textarea": true },
+    { "key": "rejectionPeriod", "label": "Rejection Period" },
+    { "key": "resubmissionPeriod", "label": "Resubmission Period" },
+    { "key": "customerObligations", "label": "Customer Obligations", "textarea": true },
+    { "key": "timeOfAssignment", "label": "Time of Assignment" },
+    { "key": "fees", "label": "Fees" },
+    { "key": "paymentPeriod", "label": "Payment Period" },
+    { "key": "customerPolicies", "label": "Customer Policies", "textarea": true },
+    { "key": "dpa", "label": "DPA" },
+    { "key": "securityPolicy", "label": "Security Policy", "textarea": true },
+    { "key": "sowTerm", "label": "SOW Term" },
+    { "key": "additionalWarranties", "label": "Additional Warranties", "textarea": true },
+    { "key": "increasedClaims", "label": "Increased Claims", "textarea": true },
+    { "key": "increasedCapAmount", "label": "Increased Cap Amount" },
+    { "key": "generalCapAmount", "label": "General Cap Amount" },
+    { "key": "unlimitedClaims", "label": "Unlimited Claims", "textarea": true },
+    { "key": "insuranceMinimums", "label": "Insurance Minimums", "textarea": true },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "chosenCourts", "label": "Chosen Courts" },
+    { "key": "providerCoveredClaims", "label": "Provider Covered Claims", "aliases": ["Provider Covered Claim"], "textarea": true },
+    { "key": "customerCoveredClaims", "label": "Customer Covered Claims", "aliases": ["Customer Covered Claim"], "textarea": true }
+  ]
+}

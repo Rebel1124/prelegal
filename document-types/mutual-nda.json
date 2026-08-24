@@ -1,0 +1,14 @@
+{
+  "parties": [
+    { "key": "partyA", "roleLabel": "Party A" },
+    { "key": "partyB", "roleLabel": "Party B" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "purpose", "label": "Purpose", "textarea": true },
+    { "key": "mndaTerm", "label": "MNDA Term" },
+    { "key": "confidentialityTerm", "label": "Term of Confidentiality" },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "jurisdiction", "label": "Jurisdiction" }
+  ]
+}

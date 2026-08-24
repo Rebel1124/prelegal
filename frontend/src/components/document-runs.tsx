@@ -6,7 +6,11 @@ export function DocumentRunsView({ runs }: { runs: DocRun[] }) {
       {runs.map((run, index) => {
         switch (run.type) {
           case "bold":
-            return <strong key={index}>{run.text}</strong>;
+            return (
+              <strong key={index}>
+                <DocumentRunsView runs={run.runs} />
+              </strong>
+            );
           case "link":
             return (
               <a
@@ -25,6 +29,12 @@ export function DocumentRunsView({ runs }: { runs: DocRun[] }) {
                 key={index}
                 className="underline decoration-dotted underline-offset-2 font-medium text-gray-900"
               >
+                {run.text}
+              </span>
+            );
+          case "partyRole":
+            return (
+              <span key={index} className="font-medium text-gray-900">
                 {run.text}
               </span>
             );

@@ -1,0 +1,21 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "categoriesOfPersonalData", "label": "Categories of Personal Data", "textarea": true },
+    { "key": "categoriesOfDataSubjects", "label": "Categories of Data Subjects", "textarea": true },
+    { "key": "agreement", "label": "Agreement", "textarea": true },
+    { "key": "specialCategoryData", "label": "Special Category Data", "textarea": true },
+    { "key": "specialCategoryDataRestrictions", "label": "Special Category Data Restrictions or Safeguards", "textarea": true },
+    { "key": "frequencyOfTransfer", "label": "Frequency of Transfer" },
+    { "key": "natureAndPurposeOfProcessing", "label": "Nature and Purpose of Processing", "textarea": true },
+    { "key": "durationOfProcessing", "label": "Duration of Processing" },
+    { "key": "approvedSubprocessors", "label": "Approved Subprocessors", "textarea": true },
+    { "key": "governingMemberState", "label": "Governing Member State" },
+    { "key": "securityPolicy", "label": "Security Policy", "textarea": true },
+    { "key": "providerSecurityContact", "label": "Provider Security Contact" }
+  ]
+}

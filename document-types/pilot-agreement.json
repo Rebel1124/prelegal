@@ -1,0 +1,14 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "pilotPeriod", "label": "Pilot Period" },
+    { "key": "generalCapAmount", "label": "General Cap Amount" },
+    { "key": "governingLaw", "label": "Governing Law" },
+    { "key": "chosenCourts", "label": "Chosen Courts" },
+    { "key": "noticeAddress", "label": "Notice Address", "textarea": true }
+  ]
+}

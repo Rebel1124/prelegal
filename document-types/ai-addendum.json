@@ -1,0 +1,13 @@
+{
+  "parties": [
+    { "key": "customer", "roleLabel": "Customer" },
+    { "key": "provider", "roleLabel": "Provider" }
+  ],
+  "fields": [
+    { "key": "effectiveDate", "label": "Effective Date" },
+    { "key": "trainingData", "label": "Training Data", "textarea": true },
+    { "key": "trainingPurposes", "label": "Training Purposes", "textarea": true },
+    { "key": "trainingRestrictions", "label": "Training Restrictions", "textarea": true },
+    { "key": "improvementRestrictions", "label": "Improvement Restrictions", "textarea": true }
+  ]
+}

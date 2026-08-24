@@ -6,7 +6,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
 from app.db import init_db
-from app.nda_chat import NdaChatRequest, NdaChatResponse, run_chat_turn
+from app.document_chat import DocumentChatRequest, DocumentChatResponse, run_chat_turn
+from app.document_suggest import SuggestionRequest, SuggestionResponse, run_suggestion
 
 STATIC_DIR = Path(os.environ.get("STATIC_DIR", "static"))
 
@@ -25,9 +26,14 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/api/nda/chat")
-def nda_chat(request: NdaChatRequest) -> NdaChatResponse:
-    return run_chat_turn(request)
+@app.post("/api/documents/{slug}/chat")
+def document_chat(slug: str, request: DocumentChatRequest) -> DocumentChatResponse:
+    return run_chat_turn(slug, request)
+
+
+@app.post("/api/documents/suggest")
+def documents_suggest(request: SuggestionRequest) -> SuggestionResponse:
+    return run_suggestion(request)
 
 
 if STATIC_DIR.is_dir():

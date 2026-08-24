@@ -12,7 +12,7 @@ export default function LoginPage() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     login();
-    router.push("/nda");
+    router.push("/documents");
   }
 
   return (
