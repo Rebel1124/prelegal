@@ -1,24 +1,61 @@
-import fs from "node:fs";
-import path from "node:path";
-import { NdaForm } from "@/components/nda-form";
-import { parseStandardTerms } from "@/lib/standard-terms";
+"use client";
 
-export default function Home() {
-  const templatePath = path.join(process.cwd(), "src", "content", "mutual-nda-standard-terms.md");
-  const raw = fs.readFileSync(templatePath, "utf8");
-  const standardTerms = parseStandardTerms(raw);
+import { useRouter } from "next/navigation";
+import { type FormEvent, useState } from "react";
+import { login } from "@/lib/auth";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    login();
+    router.push("/nda");
+  }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-10">
-      <div className="mx-auto max-w-6xl px-4">
-        <header className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900">Mutual NDA Creator</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Fill in the details below to generate a Mutual Non-Disclosure Agreement, preview it,
-            and download a PDF copy.
-          </p>
-        </header>
-        <NdaForm standardTerms={standardTerms} />
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+        <h1 className="text-xl font-semibold text-gray-900">Sign in to Prelegal</h1>
+        <p className="mt-1 text-sm text-gray-600">Draft common legal agreements.</p>
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-md bg-[#753991] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          >
+            Sign in
+          </button>
+        </form>
       </div>
     </main>
   );
