@@ -8,7 +8,7 @@ The available documents are covered in the catalog.json file in the project root
 
 @catalog.json
 
-The current implementation supports all 11 document types, each filled in via an AI chat, with no real authentication and no document persistence yet. See Implementation status below.
+The current implementation supports all 11 document types, each filled in via an AI chat, with real authentication and per-user document persistence. See Implementation status below.
 
 ## Development process
 
@@ -69,13 +69,17 @@ Backend available at http://localhost:8000
 - **Docker**: `Dockerfile` now copies `catalog.json`, `templates/`, and `document-types/` into both build stages (previously only `templates/mutual-nda.md` was manually duplicated into `frontend/src/content/`, which this removes).
 - A parametrized test (backend and frontend) parses and fills every real template against its config with empty data to catch schema/template drift (e.g. a template using a plural span label where the config expected the singular) as a test failure rather than a runtime crash.
 
-**Not yet built**: real authentication (signup/signin, password hashing), document persistence.
+**PL-7 — Support multiple users & final polish**: replaced the fake login with real signup/signin, added per-user document persistence with resume, and a visual polish pass across every screen.
+- **Backend**: new `auth.py` (bcrypt password hashing, opaque `secrets.token_urlsafe` bearer-token sessions stored in a new `sessions` table, `get_current_user` dependency) and `documents_store.py` (list/get/upsert saved documents, scoped per user). `db.py` gained `sessions` and `documents` tables and a per-request `get_db()` connection dependency. `POST /api/documents/{slug}/chat` now requires auth and upserts a `documents` row on every turn (a document is created on the first message of a fresh chat, and updated on every subsequent turn — including a slug check so a `documentId` can't be replayed against a different document type). New routes: `POST /api/auth/signup`, `POST /api/auth/login`, `GET /api/documents/mine`, `GET /api/documents/{document_id}`.
+- **Chat fix**: `document_chat.py` now computes the actual missing required/optional fields in code each turn (`compute_missing_fields`) and injects that concrete list into the system prompt with an explicit instruction, so the assistant asks a follow-up only when fields are genuinely still missing, instead of relying on the model to self-track from conversation history.
+- **Frontend**: `lib/auth.ts` rewritten around a real bearer-token session (`localStorage`, key `prelegal_session`) with an `authFetch` wrapper (adds the token, signs the user out and redirects to `/` on a 401). `/` is now a single sign-in/sign-up toggle form. A new `/documents/mine` page lists a user's saved documents; opening one resumes the AI chat with its prior messages and field values loaded (via a `?documentId=` query param read once on mount, so a background chat reply's own URL update doesn't cause a stale refetch). `RequireAuth` now renders a shared header/nav (Documents / My Documents / email / Log out) used on every authenticated screen.
+- **Polish**: brand colors added as Tailwind v4 `@theme` tokens (`--color-accent-yellow`, `--color-brand-blue`, `--color-brand-purple`, `--color-brand-navy`, `--color-brand-gray`) and applied consistently in place of ad hoc hex values; a persistent "this is a draft, not legal advice" disclaimer appears in the document workspace and on the generated PDF.
 
 ## Current state (quick reference)
 
-- **Routes**: `/` (fake login, redirects to `/documents`) → `/documents` (catalog picker + "describe what you need" box) → `/documents/[slug]` (chat + live preview + PDF download), one per document type in `catalog.json`.
-- **Backend API**: `GET /api/health`, `POST /api/documents/{slug}/chat`, `POST /api/documents/suggest`.
+- **Routes**: `/` (sign in / sign up, redirects to `/documents`) → `/documents` (catalog picker + "describe what you need" box) → `/documents/[slug]` (chat + live preview + PDF download, resumable via `?documentId=`) → `/documents/mine` (a user's saved documents).
+- **Backend API**: `GET /api/health`, `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/documents/{slug}/chat` (auth required), `POST /api/documents/suggest`, `GET /api/documents/mine` (auth required), `GET /api/documents/{document_id}` (auth required).
 - **Supported documents**: all 11 in `catalog.json` — each backed by a `templates/<slug>.md` template and a `document-types/<slug>.json` schema (party roles + fields).
-- **Auth**: client-side-only fake gate (any non-empty email/password, `localStorage` session) — not real auth. The `users` SQLite table exists but nothing reads or writes it yet.
-- **Persistence**: none — no drafts, sessions, or documents are saved; every chat is stateless (full history/fields resent each turn).
+- **Auth**: real signup/signin — bcrypt-hashed passwords, opaque bearer-token sessions in a `sessions` table. Still reset from scratch on every backend startup, per the project's SQLite design (no persistence across restarts).
+- **Persistence**: a `documents` row is created on a chat's first turn and upserted every turn thereafter, scoped to the signed-in user; a user can have multiple saved documents of the same type.
 - **Tests**: `backend/tests` (`pytest`) and `frontend/src/**/*.test.ts(x)` (Vitest + RTL), including a parametrized check that every document type's real template parses/fills cleanly against its schema.

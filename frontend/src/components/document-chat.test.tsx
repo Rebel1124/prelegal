@@ -32,10 +32,12 @@ function typeAndSend(text: string) {
 describe("DocumentChat", () => {
   let onDataChange: (data: DocumentFormData) => void;
   let onSendingChange: (isSending: boolean) => void;
+  let onDocumentIdChange: (documentId: number) => void;
 
   beforeEach(() => {
     onDataChange = vi.fn();
     onSendingChange = vi.fn();
+    onDocumentIdChange = vi.fn();
   });
 
   afterEach(() => {
@@ -50,6 +52,8 @@ describe("DocumentChat", () => {
         onDataChange={onDataChange}
         isSending={isSending}
         onSendingChange={onSendingChange}
+        documentId={null}
+        onDocumentIdChange={onDocumentIdChange}
       />,
     );
   }
@@ -66,7 +70,8 @@ describe("DocumentChat", () => {
     };
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ reply: "Got it, thanks!", fields: updatedFields }),
+      status: 200,
+      json: async () => ({ reply: "Got it, thanks!", fields: updatedFields, documentId: 42 }),
     });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -78,10 +83,14 @@ describe("DocumentChat", () => {
     expect(onSendingChange).toHaveBeenCalledWith(true);
     await waitFor(() => expect(screen.getByText("Got it, thanks!")).toBeInTheDocument());
     expect(onDataChange).toHaveBeenCalledWith(updatedFields);
+    expect(onDocumentIdChange).toHaveBeenCalledWith(42);
     expect(onSendingChange).toHaveBeenCalledWith(false);
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/documents/mutual-nda/chat",
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({
+        method: "POST",
+        body: expect.stringContaining('"documentId":null'),
+      }),
     );
   });
 

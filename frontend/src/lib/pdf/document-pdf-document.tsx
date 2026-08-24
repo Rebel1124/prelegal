@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   page: { paddingVertical: 48, paddingHorizontal: 56, fontSize: 10, lineHeight: 1.5, color: "#111827" },
   title: { fontSize: 16, fontFamily: "Helvetica-Bold", marginBottom: 4 },
   subtitle: { fontSize: 10, color: "#6b7280", marginBottom: 16 },
+  disclaimer: { fontSize: 8, color: "#888888", marginBottom: 16, fontStyle: "italic" },
   h2: { fontSize: 13, fontFamily: "Helvetica-Bold", marginTop: 20, marginBottom: 10 },
   paragraph: { marginBottom: 8 },
   detailRow: { flexDirection: "row", marginBottom: 4 },
@@ -82,6 +83,11 @@ export function DocumentPdfDocument({ config, data, standardTerms }: DocumentPdf
       <Page size="A4" style={styles.page}>
         <Text style={styles.title}>{config.name}</Text>
         <Text style={styles.subtitle}>Cover Page</Text>
+        <Text style={styles.disclaimer}>
+          This is a draft generated to help you get started. It has not been reviewed by an attorney
+          and should not be relied on as legal advice — have it reviewed by a qualified lawyer before
+          use.
+        </Text>
 
         <Text style={styles.paragraph}>
           This Cover Page is entered into as of{" "}

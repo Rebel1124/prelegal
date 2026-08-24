@@ -10,18 +10,26 @@ export function DocumentChat({
   onDataChange,
   isSending,
   onSendingChange,
+  documentId,
+  onDocumentIdChange,
+  initialMessages,
 }: {
   config: DocumentTypeConfig;
   data: DocumentFormData;
   onDataChange: (data: DocumentFormData) => void;
   isSending: boolean;
   onSendingChange: (isSending: boolean) => void;
+  documentId: number | null;
+  onDocumentIdChange: (documentId: number) => void;
+  initialMessages?: ChatMessage[];
 }) {
   const [greeting] = useState(
     () =>
       `Hi! I'll help you draft a ${config.name}. Who are the parties involved, and when should it take effect?`,
   );
-  const [messages, setMessages] = useState<ChatMessage[]>([{ role: "assistant", content: greeting }]);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    () => initialMessages ?? [{ role: "assistant", content: greeting }],
+  );
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -37,9 +45,10 @@ export function DocumentChat({
     setError(null);
 
     try {
-      const result = await sendDocumentChatMessage(config.slug, nextMessages, data);
+      const result = await sendDocumentChatMessage(config.slug, nextMessages, data, documentId);
       setMessages((prev) => [...prev, { role: "assistant", content: result.reply }]);
       onDataChange(result.fields);
+      onDocumentIdChange(result.documentId);
     } catch (err) {
       console.error("Document chat request failed", err);
       setError("Something went wrong sending that message. Please try again.");
@@ -61,7 +70,7 @@ export function DocumentChat({
             <p
               className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-line ${
                 message.role === "user"
-                  ? "bg-[#209dd7] text-white"
+                  ? "bg-brand-blue text-white"
                   : "bg-gray-100 text-gray-900"
               }`}
             >
@@ -88,7 +97,7 @@ export function DocumentChat({
         <button
           type="submit"
           disabled={isSending || !draft.trim()}
-          className="rounded-md bg-[#753991] px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-md bg-brand-purple px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           Send
         </button>
