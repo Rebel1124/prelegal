@@ -70,3 +70,12 @@ Backend available at http://localhost:8000
 - A parametrized test (backend and frontend) parses and fills every real template against its config with empty data to catch schema/template drift (e.g. a template using a plural span label where the config expected the singular) as a test failure rather than a runtime crash.
 
 **Not yet built**: real authentication (signup/signin, password hashing), document persistence.
+
+## Current state (quick reference)
+
+- **Routes**: `/` (fake login, redirects to `/documents`) → `/documents` (catalog picker + "describe what you need" box) → `/documents/[slug]` (chat + live preview + PDF download), one per document type in `catalog.json`.
+- **Backend API**: `GET /api/health`, `POST /api/documents/{slug}/chat`, `POST /api/documents/suggest`.
+- **Supported documents**: all 11 in `catalog.json` — each backed by a `templates/<slug>.md` template and a `document-types/<slug>.json` schema (party roles + fields).
+- **Auth**: client-side-only fake gate (any non-empty email/password, `localStorage` session) — not real auth. The `users` SQLite table exists but nothing reads or writes it yet.
+- **Persistence**: none — no drafts, sessions, or documents are saved; every chat is stateless (full history/fields resent each turn).
+- **Tests**: `backend/tests` (`pytest`) and `frontend/src/**/*.test.ts(x)` (Vitest + RTL), including a parametrized check that every document type's real template parses/fills cleanly against its schema.
